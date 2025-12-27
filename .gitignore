@@ -1,0 +1,29 @@
+# Claude and BMAD files
+.claude
+_bmad/
+_bmad-output/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Environment and secrets
+.env
+.env.local
+*.key
+
+# Logs
+*.log

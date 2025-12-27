@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Assistant</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🤖 AI Assistant</h1>
+      <button id="settingsBtn" class="icon-btn" title="設定">⚙️</button>
+    </header>
+
+    <!-- 主功能面板 -->
+    <div id="mainPanel" class="panel">
+      <div class="action-grid">
+        <button id="scanPageBtn" class="action-btn">
+          <span class="icon">📸</span>
+          <span class="label">掃描畫面</span>
+        </button>
+        <button id="summarizeVideoBtn" class="action-btn">
+          <span class="icon">🎬</span>
+          <span class="label">總結影片</span>
+        </button>
+        <button id="translateBtn" class="action-btn">
+          <span class="icon">🌐</span>
+          <span class="label">翻譯頁面</span>
+        </button>
+        <button id="translateSelectionBtn" class="action-btn">
+          <span class="icon">✏️</span>
+          <span class="label">翻譯選取</span>
+        </button>
+      </div>
+
+      <!-- 自訂提示輸入 -->
+      <div class="custom-prompt-section">
+        <textarea id="customPrompt" placeholder="輸入自訂指令（可選）..."></textarea>
+        <button id="sendCustomBtn" class="primary-btn">發送</button>
+      </div>
+
+      <!-- 結果顯示區 -->
+      <div id="resultSection" class="result-section hidden">
+        <div class="result-header">
+          <h3>結果</h3>
+          <button id="copyResultBtn" class="icon-btn" title="複製">📋</button>
+          <button id="closeResultBtn" class="icon-btn" title="關閉">✕</button>
+        </div>
+        <div id="resultContent" class="result-content"></div>
+      </div>
+
+      <!-- 載入中狀態 -->
+      <div id="loadingSection" class="loading-section hidden">
+        <div class="spinner"></div>
+        <p id="loadingText">處理中...</p>
+      </div>
+    </div>
+
+    <!-- 設定面板 -->
+    <div id="settingsPanel" class="panel hidden">
+      <div class="settings-header">
+        <button id="backBtn" class="icon-btn">←</button>
+        <h2>設定</h2>
+      </div>
+
+      <div class="settings-form">
+        <!-- AI Provider 選擇 -->
+        <div class="form-group">
+          <label for="aiProvider">AI 服務商</label>
+          <select id="aiProvider">
+            <option value="anthropic">Anthropic (Claude)</option>
+            <option value="openai">OpenAI (GPT)</option>
+          </select>
+        </div>
+
+        <!-- API Key -->
+        <div class="form-group">
+          <label for="apiKey">API Key</label>
+          <div class="input-with-toggle">
+            <input type="password" id="apiKey" placeholder="輸入你的 API Key">
+            <button id="toggleApiKey" class="icon-btn">👁️</button>
+          </div>
+        </div>
+
+        <!-- Model 選擇 -->
+        <div class="form-group">
+          <label for="aiModel">Model</label>
+          <select id="aiModel">
+            <!-- Anthropic Models -->
+            <optgroup label="Anthropic" id="anthropicModels">
+              <option value="claude-sonnet-4-20250514">Claude Sonnet 4</option>
+              <option value="claude-opus-4-0-20250514">Claude Opus 4</option>
+              <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</option>
+              <option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</option>
+            </optgroup>
+            <!-- OpenAI Models -->
+            <optgroup label="OpenAI" id="openaiModels">
+              <option value="gpt-4o">GPT-4o</option>
+              <option value="gpt-4o-mini">GPT-4o Mini</option>
+              <option value="gpt-4-turbo">GPT-4 Turbo</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- 翻譯目標語言 -->
+        <div class="form-group">
+          <label for="targetLang">翻譯目標語言</label>
+          <select id="targetLang">
+            <option value="zh-TW">繁體中文</option>
+            <option value="zh-CN">簡體中文</option>
+            <option value="en">English</option>
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+          </select>
+        </div>
+
+        <button id="saveSettingsBtn" class="primary-btn">儲存設定</button>
+        
+        <div id="settingsStatus" class="status-message hidden"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
