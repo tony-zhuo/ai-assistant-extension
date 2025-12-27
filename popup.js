@@ -72,7 +72,8 @@ const elements = {
   
   // Model groups
   anthropicModels: document.getElementById('anthropicModels'),
-  openaiModels: document.getElementById('openaiModels')
+  openaiModels: document.getElementById('openaiModels'),
+  geminiModels: document.getElementById('geminiModels')
 };
 
 // Initialize
@@ -137,22 +138,27 @@ function showMain() {
 // Update model visibility based on provider
 function updateModelVisibility() {
   const provider = elements.aiProvider.value;
-  const anthropicOptions = elements.anthropicModels.querySelectorAll('option');
-  const openaiOptions = elements.openaiModels.querySelectorAll('option');
-  
+
+  // Hide all model groups first
+  elements.anthropicModels.style.display = 'none';
+  elements.openaiModels.style.display = 'none';
+  elements.geminiModels.style.display = 'none';
+
+  // Show relevant model group and set default model
   if (provider === 'anthropic') {
     elements.anthropicModels.style.display = '';
-    elements.openaiModels.style.display = 'none';
-    // Select first Anthropic model if current selection is OpenAI
-    if (elements.aiModel.value.startsWith('gpt')) {
+    if (!elements.aiModel.value.startsWith('claude')) {
       elements.aiModel.value = 'claude-sonnet-4-20250514';
     }
-  } else {
-    elements.anthropicModels.style.display = 'none';
+  } else if (provider === 'openai') {
     elements.openaiModels.style.display = '';
-    // Select first OpenAI model if current selection is Claude
-    if (elements.aiModel.value.startsWith('claude')) {
+    if (!elements.aiModel.value.startsWith('gpt')) {
       elements.aiModel.value = 'gpt-4o';
+    }
+  } else if (provider === 'gemini') {
+    elements.geminiModels.style.display = '';
+    if (!elements.aiModel.value.startsWith('gemini')) {
+      elements.aiModel.value = 'gemini-2.0-flash-exp';
     }
   }
 }
@@ -177,6 +183,11 @@ function validateApiKey(provider, apiKey) {
   } else if (provider === 'openai') {
     if (!apiKey.startsWith('sk-')) {
       return { valid: false, message: i18n('errorApiKeyOpenAIFormat') };
+    }
+  } else if (provider === 'gemini') {
+    // Gemini API keys are typically 39 characters
+    if (apiKey.length < 30) {
+      return { valid: false, message: i18n('errorApiKeyGeminiFormat') };
     }
   }
 
@@ -413,9 +424,11 @@ async function sendCustomPrompt() {
 
 async function sendToAI(settings, prompt, imageBase64 = null) {
   const { aiProvider, apiKey, aiModel } = settings;
-  
+
   if (aiProvider === 'anthropic') {
     return await callAnthropicAPI(apiKey, aiModel, prompt, imageBase64);
+  } else if (aiProvider === 'gemini') {
+    return await callGeminiAPI(apiKey, aiModel, prompt, imageBase64);
   } else {
     return await callOpenAIAPI(apiKey, aiModel, prompt, imageBase64);
   }
@@ -534,6 +547,64 @@ async function callOpenAIAPI(apiKey, model, prompt, imageBase64) {
 
     const data = await response.json();
     return data.choices[0].message.content;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error(i18n('errorApiTimeout'));
+    }
+    throw error;
+  }
+}
+
+// Gemini API (with timeout)
+async function callGeminiAPI(apiKey, model, prompt, imageBase64) {
+  const parts = [];
+
+  if (imageBase64) {
+    // Remove data URL prefix
+    const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+    parts.push({
+      inline_data: {
+        mime_type: 'image/png',
+        data: base64Data
+      }
+    });
+  }
+
+  parts.push({
+    text: prompt
+  });
+
+  // Create abort controller for timeout
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
+
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: parts
+        }],
+        generationConfig: {
+          maxOutputTokens: MAX_TOKENS
+        }
+      }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error?.message || i18n('errorApiGeneric', [response.status]));
+    }
+
+    const data = await response.json();
+    return data.candidates[0].content.parts[0].text;
   } catch (error) {
     clearTimeout(timeoutId);
     if (error.name === 'AbortError') {

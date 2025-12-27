@@ -151,6 +151,10 @@
     "message": "OpenAI API Key should start with sk-",
     "description": "Error message for invalid OpenAI API key format"
   },
+  "errorApiKeyGeminiFormat": {
+    "message": "Gemini API Key appears to be invalid (too short)",
+    "description": "Error message for invalid Gemini API key format"
+  },
   "errorEnterApiKey": {
     "message": "Please enter your API Key in Settings first",
     "description": "Error message when API key is not set"

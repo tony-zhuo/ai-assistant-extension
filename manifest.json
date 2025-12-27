@@ -14,6 +14,7 @@
     "https://*.youtube.com/*",
     "https://api.anthropic.com/*",
     "https://api.openai.com/*",
+    "https://generativelanguage.googleapis.com/*",
     "<all_urls>"
   ],
   "action": {

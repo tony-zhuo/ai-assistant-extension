@@ -151,6 +151,10 @@
     "message": "OpenAI API Key 應該以 sk- 開頭",
     "description": "Error message for invalid OpenAI API key format"
   },
+  "errorApiKeyGeminiFormat": {
+    "message": "Gemini API Key 格式無效（長度不足）",
+    "description": "Error message for invalid Gemini API key format"
+  },
   "errorEnterApiKey": {
     "message": "請先在設定中輸入你的 API Key",
     "description": "Error message when API key is not set"

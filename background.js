@@ -134,9 +134,11 @@ async function handleSummarizePage(settings, tab) {
 // Call AI API
 async function callAI(settings, prompt, imageBase64 = null) {
   const { aiProvider, apiKey, aiModel } = settings;
-  
+
   if (aiProvider === 'anthropic' || aiProvider === undefined) {
     return await callAnthropicAPI(apiKey, aiModel || 'claude-sonnet-4-20250514', prompt, imageBase64);
+  } else if (aiProvider === 'gemini') {
+    return await callGeminiAPI(apiKey, aiModel || 'gemini-2.0-flash-exp', prompt, imageBase64);
   } else {
     return await callOpenAIAPI(apiKey, aiModel || 'gpt-4o', prompt, imageBase64);
   }
@@ -252,6 +254,63 @@ async function callOpenAIAPI(apiKey, model, prompt, imageBase64) {
 
     const data = await response.json();
     return data.choices[0].message.content;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error(i18n('errorApiTimeout'));
+    }
+    throw error;
+  }
+}
+
+// Gemini API (with timeout)
+async function callGeminiAPI(apiKey, model, prompt, imageBase64) {
+  const parts = [];
+
+  if (imageBase64) {
+    const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+    parts.push({
+      inline_data: {
+        mime_type: 'image/png',
+        data: base64Data
+      }
+    });
+  }
+
+  parts.push({
+    text: prompt
+  });
+
+  // Create abort controller for timeout
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
+
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: parts
+        }],
+        generationConfig: {
+          maxOutputTokens: MAX_TOKENS
+        }
+      }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error?.message || i18n('errorApiGeneric', [response.status]));
+    }
+
+    const data = await response.json();
+    return data.candidates[0].content.parts[0].text;
   } catch (error) {
     clearTimeout(timeoutId);
     if (error.name === 'AbortError') {
