@@ -2,6 +2,41 @@
 const API_TIMEOUT = 60000; // 60 seconds timeout for API calls
 const MAX_TOKENS = 4096;
 
+// i18n helper function
+function i18n(messageName, substitutions) {
+  return chrome.i18n.getMessage(messageName, substitutions) || messageName;
+}
+
+// Localize page elements with data-i18n attributes
+function localizePage() {
+  // Localize text content
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const messageName = element.getAttribute('data-i18n');
+    const message = i18n(messageName);
+    if (message) {
+      element.textContent = message;
+    }
+  });
+
+  // Localize placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+    const messageName = element.getAttribute('data-i18n-placeholder');
+    const message = i18n(messageName);
+    if (message) {
+      element.placeholder = message;
+    }
+  });
+
+  // Localize titles
+  document.querySelectorAll('[data-i18n-title]').forEach(element => {
+    const messageName = element.getAttribute('data-i18n-title');
+    const message = i18n(messageName);
+    if (message) {
+      element.title = message;
+    }
+  });
+}
+
 // DOM Elements
 const elements = {
   // Panels
@@ -42,6 +77,7 @@ const elements = {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
+  localizePage();
   await loadSettings();
   setupEventListeners();
   updateModelVisibility();
@@ -131,16 +167,16 @@ function toggleApiKeyVisibility() {
 // Validate API key format
 function validateApiKey(provider, apiKey) {
   if (!apiKey || apiKey.trim() === '') {
-    return { valid: false, message: 'API Key 不能為空' };
+    return { valid: false, message: i18n('errorApiKeyEmpty') };
   }
 
   if (provider === 'anthropic') {
     if (!apiKey.startsWith('sk-ant-')) {
-      return { valid: false, message: 'Anthropic API Key 應該以 sk-ant- 開頭' };
+      return { valid: false, message: i18n('errorApiKeyAnthropicFormat') };
     }
   } else if (provider === 'openai') {
     if (!apiKey.startsWith('sk-')) {
-      return { valid: false, message: 'OpenAI API Key 應該以 sk- 開頭' };
+      return { valid: false, message: i18n('errorApiKeyOpenAIFormat') };
     }
   }
 
@@ -168,7 +204,7 @@ async function saveSettings() {
 
   await chrome.storage.local.set(settings);
 
-  showStatus('設定已儲存！', 'success');
+  showStatus(i18n('settingsSaved'), 'success');
 }
 
 // Show status message
@@ -183,8 +219,8 @@ function showStatus(message, type) {
 }
 
 // Loading state
-function showLoading(text = '處理中...') {
-  elements.loadingText.textContent = text;
+function showLoading(text = null) {
+  elements.loadingText.textContent = text || i18n('processing');
   elements.loadingSection.classList.remove('hidden');
   elements.resultSection.classList.add('hidden');
 }
@@ -218,7 +254,7 @@ async function copyResult() {
 async function checkSettings() {
   const settings = await chrome.storage.local.get(['apiKey', 'aiProvider', 'aiModel']);
   if (!settings.apiKey) {
-    showResult('請先在設定中輸入你的 API Key', true);
+    showResult(i18n('errorEnterApiKey'), true);
     return null;
   }
   return settings;
@@ -230,21 +266,21 @@ async function checkSettings() {
 async function scanPage() {
   const settings = await checkSettings();
   if (!settings) return;
-  
-  showLoading('正在掃描畫面...');
-  
+
+  showLoading(i18n('scanningPage'));
+
   try {
     // Capture visible tab
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     const screenshot = await chrome.tabs.captureVisibleTab(null, { format: 'png' });
-    
+
     const customPrompt = elements.customPrompt.value.trim();
-    const prompt = customPrompt || '請分析這張截圖中的內容，描述你看到的重要資訊。';
-    
+    const prompt = customPrompt || i18n('promptAnalyzeScreenshot');
+
     const response = await sendToAI(settings, prompt, screenshot);
     showResult(response);
   } catch (error) {
-    showResult(`錯誤：${error.message}`, true);
+    showResult(i18n('errorPrefix', [error.message]), true);
   }
 }
 
@@ -252,50 +288,41 @@ async function scanPage() {
 async function summarizeVideo() {
   const settings = await checkSettings();
   if (!settings) return;
-  
-  showLoading('正在取得影片資訊...');
-  
+
+  showLoading(i18n('gettingVideoInfo'));
+
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    
+
     if (!tab.url.includes('youtube.com/watch')) {
-      showResult('請在 YouTube 影片頁面使用此功能', true);
+      showResult(i18n('errorYouTubeOnly'), true);
       return;
     }
-    
+
     // Get video info from content script
     const videoInfo = await chrome.tabs.sendMessage(tab.id, { action: 'getVideoInfo' });
-    
+
     if (!videoInfo || !videoInfo.title) {
-      showResult('無法取得影片資訊，請確認頁面已完全載入', true);
+      showResult(i18n('errorVideoInfo'), true);
       return;
     }
-    
-    showLoading('正在總結影片...');
-    
-    let prompt = `請總結以下 YouTube 影片的內容：
 
-標題：${videoInfo.title}
-頻道：${videoInfo.channel}
-`;
+    showLoading(i18n('summarizingVideo'));
 
-    if (videoInfo.description) {
-      prompt += `\n描述：${videoInfo.description}`;
-    }
+    const descPart = videoInfo.description ? `\nDescription: ${videoInfo.description}` : '';
+    const transPart = videoInfo.transcript ? `\n\nTranscript:\n${videoInfo.transcript}` : '';
 
-    if (videoInfo.transcript) {
-      prompt += `\n\n字幕內容：\n${videoInfo.transcript}`;
-    }
-
-    prompt += `\n\n請提供：
-1. 影片主要內容摘要
-2. 重點整理（條列式）
-3. 關鍵結論或重點`;
+    const prompt = i18n('promptSummarizeVideo', [
+      videoInfo.title,
+      videoInfo.channel,
+      descPart,
+      transPart
+    ]);
 
     const response = await sendToAI(settings, prompt);
     showResult(response);
   } catch (error) {
-    showResult(`錯誤：${error.message}`, true);
+    showResult(i18n('errorPrefix', [error.message]), true);
   }
 }
 
@@ -303,31 +330,29 @@ async function summarizeVideo() {
 async function translatePage() {
   const settings = await checkSettings();
   if (!settings) return;
-  
-  showLoading('正在取得頁面內容...');
-  
+
+  showLoading(i18n('gettingPageContent'));
+
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     const pageContent = await chrome.tabs.sendMessage(tab.id, { action: 'getPageContent' });
-    
+
     if (!pageContent || !pageContent.text) {
-      showResult('無法取得頁面內容', true);
+      showResult(i18n('errorPageContent'), true);
       return;
     }
-    
-    showLoading('正在翻譯...');
-    
-    const targetLang = await chrome.storage.local.get('targetLang');
-    const langName = getLanguageName(targetLang.targetLang || 'zh-TW');
-    
-    const prompt = `請將以下內容翻譯成${langName}：
 
-${pageContent.text.substring(0, 10000)}`;
+    showLoading(i18n('translating'));
+
+    const targetLang = await chrome.storage.local.get('targetLang');
+    const langName = getLanguageName(targetLang.targetLang || 'en');
+
+    const prompt = i18n('promptTranslateTo', [langName, pageContent.text.substring(0, 10000)]);
 
     const response = await sendToAI(settings, prompt);
     showResult(response);
   } catch (error) {
-    showResult(`錯誤：${error.message}`, true);
+    showResult(i18n('errorPrefix', [error.message]), true);
   }
 }
 
@@ -335,31 +360,29 @@ ${pageContent.text.substring(0, 10000)}`;
 async function translateSelection() {
   const settings = await checkSettings();
   if (!settings) return;
-  
-  showLoading('正在取得選取內容...');
-  
+
+  showLoading(i18n('gettingSelection'));
+
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     const selection = await chrome.tabs.sendMessage(tab.id, { action: 'getSelection' });
-    
+
     if (!selection || !selection.text) {
-      showResult('請先選取要翻譯的文字', true);
+      showResult(i18n('errorSelectText'), true);
       return;
     }
-    
-    showLoading('正在翻譯...');
-    
-    const targetLang = await chrome.storage.local.get('targetLang');
-    const langName = getLanguageName(targetLang.targetLang || 'zh-TW');
-    
-    const prompt = `請將以下內容翻譯成${langName}：
 
-${selection.text}`;
+    showLoading(i18n('translating'));
+
+    const targetLang = await chrome.storage.local.get('targetLang');
+    const langName = getLanguageName(targetLang.targetLang || 'en');
+
+    const prompt = i18n('promptTranslateTo', [langName, selection.text]);
 
     const response = await sendToAI(settings, prompt);
     showResult(response);
   } catch (error) {
-    showResult(`錯誤：${error.message}`, true);
+    showResult(i18n('errorPrefix', [error.message]), true);
   }
 }
 
@@ -367,22 +390,22 @@ ${selection.text}`;
 async function sendCustomPrompt() {
   const settings = await checkSettings();
   if (!settings) return;
-  
+
   const prompt = elements.customPrompt.value.trim();
   if (!prompt) {
-    showResult('請輸入指令', true);
+    showResult(i18n('errorEnterPrompt'), true);
     return;
   }
-  
-  showLoading('處理中...');
-  
+
+  showLoading(i18n('processing'));
+
   try {
     // Also capture screenshot for context
     const screenshot = await chrome.tabs.captureVisibleTab(null, { format: 'png' });
     const response = await sendToAI(settings, prompt, screenshot);
     showResult(response);
   } catch (error) {
-    showResult(`錯誤：${error.message}`, true);
+    showResult(i18n('errorPrefix', [error.message]), true);
   }
 }
 
@@ -448,7 +471,7 @@ async function callAnthropicAPI(apiKey, model, prompt, imageBase64) {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.error?.message || `API 錯誤：${response.status}`);
+      throw new Error(error.error?.message || i18n('errorApiGeneric', [response.status]));
     }
 
     const data = await response.json();
@@ -456,7 +479,7 @@ async function callAnthropicAPI(apiKey, model, prompt, imageBase64) {
   } catch (error) {
     clearTimeout(timeoutId);
     if (error.name === 'AbortError') {
-      throw new Error('API 請求超時，請重試');
+      throw new Error(i18n('errorApiTimeout'));
     }
     throw error;
   }
@@ -506,7 +529,7 @@ async function callOpenAIAPI(apiKey, model, prompt, imageBase64) {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.error?.message || `API 錯誤：${response.status}`);
+      throw new Error(error.error?.message || i18n('errorApiGeneric', [response.status]));
     }
 
     const data = await response.json();
@@ -514,20 +537,20 @@ async function callOpenAIAPI(apiKey, model, prompt, imageBase64) {
   } catch (error) {
     clearTimeout(timeoutId);
     if (error.name === 'AbortError') {
-      throw new Error('API 請求超時，請重試');
+      throw new Error(i18n('errorApiTimeout'));
     }
     throw error;
   }
 }
 
-// Helper: Get language name
+// Helper: Get language name (localized)
 function getLanguageName(code) {
-  const languages = {
-    'zh-TW': '繁體中文',
-    'zh-CN': '簡體中文',
-    'en': '英文',
-    'ja': '日文',
-    'ko': '韓文'
+  const langKeys = {
+    'zh-TW': 'langTraditionalChinese',
+    'zh-CN': 'langSimplifiedChinese',
+    'en': 'langEnglish',
+    'ja': 'langJapanese',
+    'ko': 'langKorean'
   };
-  return languages[code] || code;
+  return i18n(langKeys[code]) || code;
 }

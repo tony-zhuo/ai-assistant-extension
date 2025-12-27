@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,65 +9,65 @@
 <body>
   <div class="container">
     <header>
-      <h1>🤖 AI Assistant</h1>
-      <button id="settingsBtn" class="icon-btn" title="設定">⚙️</button>
+      <h1>🤖 <span data-i18n="appTitle">AI Assistant</span></h1>
+      <button id="settingsBtn" class="icon-btn" data-i18n-title="settings" title="Settings">⚙️</button>
     </header>
 
-    <!-- 主功能面板 -->
+    <!-- Main Panel -->
     <div id="mainPanel" class="panel">
       <div class="action-grid">
         <button id="scanPageBtn" class="action-btn">
           <span class="icon">📸</span>
-          <span class="label">掃描畫面</span>
+          <span class="label" data-i18n="scanPage">Scan Page</span>
         </button>
         <button id="summarizeVideoBtn" class="action-btn">
           <span class="icon">🎬</span>
-          <span class="label">總結影片</span>
+          <span class="label" data-i18n="summarizeVideo">Summarize Video</span>
         </button>
         <button id="translateBtn" class="action-btn">
           <span class="icon">🌐</span>
-          <span class="label">翻譯頁面</span>
+          <span class="label" data-i18n="translatePage">Translate Page</span>
         </button>
         <button id="translateSelectionBtn" class="action-btn">
           <span class="icon">✏️</span>
-          <span class="label">翻譯選取</span>
+          <span class="label" data-i18n="translateSelection">Translate Selection</span>
         </button>
       </div>
 
-      <!-- 自訂提示輸入 -->
+      <!-- Custom Prompt Input -->
       <div class="custom-prompt-section">
-        <textarea id="customPrompt" placeholder="輸入自訂指令（可選）..."></textarea>
-        <button id="sendCustomBtn" class="primary-btn">發送</button>
+        <textarea id="customPrompt" data-i18n-placeholder="customPromptPlaceholder" placeholder="Enter custom instructions (optional)..."></textarea>
+        <button id="sendCustomBtn" class="primary-btn" data-i18n="send">Send</button>
       </div>
 
-      <!-- 結果顯示區 -->
+      <!-- Result Section -->
       <div id="resultSection" class="result-section hidden">
         <div class="result-header">
-          <h3>結果</h3>
-          <button id="copyResultBtn" class="icon-btn" title="複製">📋</button>
-          <button id="closeResultBtn" class="icon-btn" title="關閉">✕</button>
+          <h3 data-i18n="result">Result</h3>
+          <button id="copyResultBtn" class="icon-btn" data-i18n-title="copy" title="Copy">📋</button>
+          <button id="closeResultBtn" class="icon-btn" data-i18n-title="close" title="Close">✕</button>
         </div>
         <div id="resultContent" class="result-content"></div>
       </div>
 
-      <!-- 載入中狀態 -->
+      <!-- Loading Section -->
       <div id="loadingSection" class="loading-section hidden">
         <div class="spinner"></div>
-        <p id="loadingText">處理中...</p>
+        <p id="loadingText" data-i18n="processing">Processing...</p>
       </div>
     </div>
 
-    <!-- 設定面板 -->
+    <!-- Settings Panel -->
     <div id="settingsPanel" class="panel hidden">
       <div class="settings-header">
         <button id="backBtn" class="icon-btn">←</button>
-        <h2>設定</h2>
+        <h2 data-i18n="settingsTitle">Settings</h2>
       </div>
 
       <div class="settings-form">
-        <!-- AI Provider 選擇 -->
+        <!-- AI Provider Selection -->
         <div class="form-group">
-          <label for="aiProvider">AI 服務商</label>
+          <label for="aiProvider" data-i18n="aiProvider">AI Provider</label>
           <select id="aiProvider">
             <option value="anthropic">Anthropic (Claude)</option>
             <option value="openai">OpenAI (GPT)</option>
@@ -76,16 +76,16 @@
 
         <!-- API Key -->
         <div class="form-group">
-          <label for="apiKey">API Key</label>
+          <label for="apiKey" data-i18n="apiKey">API Key</label>
           <div class="input-with-toggle">
-            <input type="password" id="apiKey" placeholder="輸入你的 API Key">
+            <input type="password" id="apiKey" data-i18n-placeholder="apiKeyPlaceholder" placeholder="Enter your API Key">
             <button id="toggleApiKey" class="icon-btn">👁️</button>
           </div>
         </div>
 
-        <!-- Model 選擇 -->
+        <!-- Model Selection -->
         <div class="form-group">
-          <label for="aiModel">Model</label>
+          <label for="aiModel" data-i18n="model">Model</label>
           <select id="aiModel">
             <!-- Anthropic Models -->
             <optgroup label="Anthropic" id="anthropicModels">
@@ -103,20 +103,20 @@
           </select>
         </div>
 
-        <!-- 翻譯目標語言 -->
+        <!-- Target Language -->
         <div class="form-group">
-          <label for="targetLang">翻譯目標語言</label>
+          <label for="targetLang" data-i18n="targetLanguage">Target Language</label>
           <select id="targetLang">
-            <option value="zh-TW">繁體中文</option>
-            <option value="zh-CN">簡體中文</option>
-            <option value="en">English</option>
-            <option value="ja">日本語</option>
-            <option value="ko">한국어</option>
+            <option value="zh-TW" data-i18n="langTraditionalChinese">Traditional Chinese</option>
+            <option value="zh-CN" data-i18n="langSimplifiedChinese">Simplified Chinese</option>
+            <option value="en" data-i18n="langEnglish">English</option>
+            <option value="ja" data-i18n="langJapanese">Japanese</option>
+            <option value="ko" data-i18n="langKorean">Korean</option>
           </select>
         </div>
 
-        <button id="saveSettingsBtn" class="primary-btn">儲存設定</button>
-        
+        <button id="saveSettingsBtn" class="primary-btn" data-i18n="saveSettings">Save Settings</button>
+
         <div id="settingsStatus" class="status-message hidden"></div>
       </div>
     </div>

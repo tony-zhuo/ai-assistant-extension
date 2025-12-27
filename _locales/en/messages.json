@@ -1,0 +1,288 @@
+{
+  "extensionName": {
+    "message": "AI Assistant",
+    "description": "The name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Personal AI assistant for screen analysis, video summarization, and translation",
+    "description": "The description of the extension"
+  },
+
+  "appTitle": {
+    "message": "AI Assistant",
+    "description": "Application title in header"
+  },
+  "settings": {
+    "message": "Settings",
+    "description": "Settings button tooltip"
+  },
+
+  "scanPage": {
+    "message": "Scan Page",
+    "description": "Scan page button label"
+  },
+  "summarizeVideo": {
+    "message": "Summarize Video",
+    "description": "Summarize video button label"
+  },
+  "translatePage": {
+    "message": "Translate Page",
+    "description": "Translate page button label"
+  },
+  "translateSelection": {
+    "message": "Translate Selection",
+    "description": "Translate selection button label"
+  },
+
+  "customPromptPlaceholder": {
+    "message": "Enter custom instructions (optional)...",
+    "description": "Placeholder for custom prompt textarea"
+  },
+  "send": {
+    "message": "Send",
+    "description": "Send button label"
+  },
+
+  "result": {
+    "message": "Result",
+    "description": "Result section title"
+  },
+  "copy": {
+    "message": "Copy",
+    "description": "Copy button tooltip"
+  },
+  "close": {
+    "message": "Close",
+    "description": "Close button tooltip"
+  },
+
+  "processing": {
+    "message": "Processing...",
+    "description": "Loading state text"
+  },
+  "scanningPage": {
+    "message": "Scanning page...",
+    "description": "Scanning page loading text"
+  },
+  "gettingVideoInfo": {
+    "message": "Getting video info...",
+    "description": "Getting video info loading text"
+  },
+  "summarizingVideo": {
+    "message": "Summarizing video...",
+    "description": "Summarizing video loading text"
+  },
+  "gettingPageContent": {
+    "message": "Getting page content...",
+    "description": "Getting page content loading text"
+  },
+  "translating": {
+    "message": "Translating...",
+    "description": "Translating loading text"
+  },
+  "gettingSelection": {
+    "message": "Getting selection...",
+    "description": "Getting selection loading text"
+  },
+
+  "settingsTitle": {
+    "message": "Settings",
+    "description": "Settings panel title"
+  },
+  "aiProvider": {
+    "message": "AI Provider",
+    "description": "AI provider label"
+  },
+  "apiKey": {
+    "message": "API Key",
+    "description": "API key label"
+  },
+  "apiKeyPlaceholder": {
+    "message": "Enter your API Key",
+    "description": "API key input placeholder"
+  },
+  "model": {
+    "message": "Model",
+    "description": "Model selection label"
+  },
+  "targetLanguage": {
+    "message": "Target Language",
+    "description": "Target language label"
+  },
+  "saveSettings": {
+    "message": "Save Settings",
+    "description": "Save settings button label"
+  },
+
+  "langTraditionalChinese": {
+    "message": "Traditional Chinese",
+    "description": "Traditional Chinese language option"
+  },
+  "langSimplifiedChinese": {
+    "message": "Simplified Chinese",
+    "description": "Simplified Chinese language option"
+  },
+  "langEnglish": {
+    "message": "English",
+    "description": "English language option"
+  },
+  "langJapanese": {
+    "message": "Japanese",
+    "description": "Japanese language option"
+  },
+  "langKorean": {
+    "message": "Korean",
+    "description": "Korean language option"
+  },
+
+  "settingsSaved": {
+    "message": "Settings saved!",
+    "description": "Settings saved success message"
+  },
+  "errorApiKeyEmpty": {
+    "message": "API Key cannot be empty",
+    "description": "Error message for empty API key"
+  },
+  "errorApiKeyAnthropicFormat": {
+    "message": "Anthropic API Key should start with sk-ant-",
+    "description": "Error message for invalid Anthropic API key format"
+  },
+  "errorApiKeyOpenAIFormat": {
+    "message": "OpenAI API Key should start with sk-",
+    "description": "Error message for invalid OpenAI API key format"
+  },
+  "errorEnterApiKey": {
+    "message": "Please enter your API Key in Settings first",
+    "description": "Error message when API key is not set"
+  },
+  "errorEnterPrompt": {
+    "message": "Please enter instructions",
+    "description": "Error message when prompt is empty"
+  },
+  "errorYouTubeOnly": {
+    "message": "Please use this feature on a YouTube video page",
+    "description": "Error message when not on YouTube"
+  },
+  "errorVideoInfo": {
+    "message": "Unable to get video info. Please make sure the page is fully loaded",
+    "description": "Error message when video info cannot be retrieved"
+  },
+  "errorPageContent": {
+    "message": "Unable to get page content",
+    "description": "Error message when page content cannot be retrieved"
+  },
+  "errorSelectText": {
+    "message": "Please select some text first",
+    "description": "Error message when no text is selected"
+  },
+  "errorApiTimeout": {
+    "message": "API request timed out. Please try again",
+    "description": "Error message when API request times out"
+  },
+  "errorPrefix": {
+    "message": "Error: $ERROR$",
+    "description": "Error message prefix",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Network error"
+      }
+    }
+  },
+  "errorApiGeneric": {
+    "message": "API Error: $STATUS$",
+    "description": "Generic API error message",
+    "placeholders": {
+      "status": {
+        "content": "$1",
+        "example": "401"
+      }
+    }
+  },
+
+  "contextMenuTranslate": {
+    "message": "Translate with AI",
+    "description": "Context menu: translate selection"
+  },
+  "contextMenuExplain": {
+    "message": "Explain with AI",
+    "description": "Context menu: explain selection"
+  },
+  "contextMenuAnalyzeImage": {
+    "message": "Analyze image with AI",
+    "description": "Context menu: analyze image"
+  },
+  "contextMenuSummarize": {
+    "message": "Summarize page with AI",
+    "description": "Context menu: summarize page"
+  },
+
+  "promptAnalyzeScreenshot": {
+    "message": "Please analyze the content of this screenshot and describe the important information you see.",
+    "description": "Prompt for analyzing screenshot"
+  },
+  "promptTranslateTo": {
+    "message": "Please translate the following content to $LANGUAGE$:\n\n$TEXT$",
+    "description": "Prompt for translation",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "English"
+      },
+      "text": {
+        "content": "$2",
+        "example": "Hello world"
+      }
+    }
+  },
+  "promptExplain": {
+    "message": "Please explain the following content in a clear and easy-to-understand way:\n\n$TEXT$",
+    "description": "Prompt for explanation",
+    "placeholders": {
+      "text": {
+        "content": "$1",
+        "example": "Quantum computing"
+      }
+    }
+  },
+  "promptAnalyzeImage": {
+    "message": "Please analyze this image and describe what you see along with important details.",
+    "description": "Prompt for image analysis"
+  },
+  "promptSummarizePage": {
+    "message": "Please summarize the key points of the following webpage content:\n\nTitle: $TITLE$\nContent: $CONTENT$",
+    "description": "Prompt for page summarization",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Article Title"
+      },
+      "content": {
+        "content": "$2",
+        "example": "Article content..."
+      }
+    }
+  },
+  "promptSummarizeVideo": {
+    "message": "Please summarize the following YouTube video:\n\nTitle: $TITLE$\nChannel: $CHANNEL$\n$DESCRIPTION$\n$TRANSCRIPT$\n\nPlease provide:\n1. Main content summary\n2. Key points (bullet list)\n3. Key conclusions",
+    "description": "Prompt for video summarization",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "Video Title"
+      },
+      "channel": {
+        "content": "$2",
+        "example": "Channel Name"
+      },
+      "description": {
+        "content": "$3",
+        "example": "Description: ..."
+      },
+      "transcript": {
+        "content": "$4",
+        "example": "Transcript: ..."
+      }
+    }
+  }
+}

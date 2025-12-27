@@ -1,0 +1,288 @@
+{
+  "extensionName": {
+    "message": "AI 助手",
+    "description": "The name of the extension"
+  },
+  "extensionDescription": {
+    "message": "個人化 AI 助手，支援畫面分析、影片總結和翻譯功能",
+    "description": "The description of the extension"
+  },
+
+  "appTitle": {
+    "message": "AI 助手",
+    "description": "Application title in header"
+  },
+  "settings": {
+    "message": "設定",
+    "description": "Settings button tooltip"
+  },
+
+  "scanPage": {
+    "message": "掃描畫面",
+    "description": "Scan page button label"
+  },
+  "summarizeVideo": {
+    "message": "總結影片",
+    "description": "Summarize video button label"
+  },
+  "translatePage": {
+    "message": "翻譯頁面",
+    "description": "Translate page button label"
+  },
+  "translateSelection": {
+    "message": "翻譯選取",
+    "description": "Translate selection button label"
+  },
+
+  "customPromptPlaceholder": {
+    "message": "輸入自訂指令（可選）...",
+    "description": "Placeholder for custom prompt textarea"
+  },
+  "send": {
+    "message": "發送",
+    "description": "Send button label"
+  },
+
+  "result": {
+    "message": "結果",
+    "description": "Result section title"
+  },
+  "copy": {
+    "message": "複製",
+    "description": "Copy button tooltip"
+  },
+  "close": {
+    "message": "關閉",
+    "description": "Close button tooltip"
+  },
+
+  "processing": {
+    "message": "處理中...",
+    "description": "Loading state text"
+  },
+  "scanningPage": {
+    "message": "正在掃描畫面...",
+    "description": "Scanning page loading text"
+  },
+  "gettingVideoInfo": {
+    "message": "正在取得影片資訊...",
+    "description": "Getting video info loading text"
+  },
+  "summarizingVideo": {
+    "message": "正在總結影片...",
+    "description": "Summarizing video loading text"
+  },
+  "gettingPageContent": {
+    "message": "正在取得頁面內容...",
+    "description": "Getting page content loading text"
+  },
+  "translating": {
+    "message": "正在翻譯...",
+    "description": "Translating loading text"
+  },
+  "gettingSelection": {
+    "message": "正在取得選取內容...",
+    "description": "Getting selection loading text"
+  },
+
+  "settingsTitle": {
+    "message": "設定",
+    "description": "Settings panel title"
+  },
+  "aiProvider": {
+    "message": "AI 服務商",
+    "description": "AI provider label"
+  },
+  "apiKey": {
+    "message": "API Key",
+    "description": "API key label"
+  },
+  "apiKeyPlaceholder": {
+    "message": "輸入你的 API Key",
+    "description": "API key input placeholder"
+  },
+  "model": {
+    "message": "模型",
+    "description": "Model selection label"
+  },
+  "targetLanguage": {
+    "message": "翻譯目標語言",
+    "description": "Target language label"
+  },
+  "saveSettings": {
+    "message": "儲存設定",
+    "description": "Save settings button label"
+  },
+
+  "langTraditionalChinese": {
+    "message": "繁體中文",
+    "description": "Traditional Chinese language option"
+  },
+  "langSimplifiedChinese": {
+    "message": "簡體中文",
+    "description": "Simplified Chinese language option"
+  },
+  "langEnglish": {
+    "message": "English",
+    "description": "English language option"
+  },
+  "langJapanese": {
+    "message": "日本語",
+    "description": "Japanese language option"
+  },
+  "langKorean": {
+    "message": "한국어",
+    "description": "Korean language option"
+  },
+
+  "settingsSaved": {
+    "message": "設定已儲存！",
+    "description": "Settings saved success message"
+  },
+  "errorApiKeyEmpty": {
+    "message": "API Key 不能為空",
+    "description": "Error message for empty API key"
+  },
+  "errorApiKeyAnthropicFormat": {
+    "message": "Anthropic API Key 應該以 sk-ant- 開頭",
+    "description": "Error message for invalid Anthropic API key format"
+  },
+  "errorApiKeyOpenAIFormat": {
+    "message": "OpenAI API Key 應該以 sk- 開頭",
+    "description": "Error message for invalid OpenAI API key format"
+  },
+  "errorEnterApiKey": {
+    "message": "請先在設定中輸入你的 API Key",
+    "description": "Error message when API key is not set"
+  },
+  "errorEnterPrompt": {
+    "message": "請輸入指令",
+    "description": "Error message when prompt is empty"
+  },
+  "errorYouTubeOnly": {
+    "message": "請在 YouTube 影片頁面使用此功能",
+    "description": "Error message when not on YouTube"
+  },
+  "errorVideoInfo": {
+    "message": "無法取得影片資訊，請確認頁面已完全載入",
+    "description": "Error message when video info cannot be retrieved"
+  },
+  "errorPageContent": {
+    "message": "無法取得頁面內容",
+    "description": "Error message when page content cannot be retrieved"
+  },
+  "errorSelectText": {
+    "message": "請先選取要翻譯的文字",
+    "description": "Error message when no text is selected"
+  },
+  "errorApiTimeout": {
+    "message": "API 請求超時，請重試",
+    "description": "Error message when API request times out"
+  },
+  "errorPrefix": {
+    "message": "錯誤：$ERROR$",
+    "description": "Error message prefix",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "網路錯誤"
+      }
+    }
+  },
+  "errorApiGeneric": {
+    "message": "API 錯誤：$STATUS$",
+    "description": "Generic API error message",
+    "placeholders": {
+      "status": {
+        "content": "$1",
+        "example": "401"
+      }
+    }
+  },
+
+  "contextMenuTranslate": {
+    "message": "用 AI 翻譯選取文字",
+    "description": "Context menu: translate selection"
+  },
+  "contextMenuExplain": {
+    "message": "用 AI 解釋選取內容",
+    "description": "Context menu: explain selection"
+  },
+  "contextMenuAnalyzeImage": {
+    "message": "用 AI 分析圖片",
+    "description": "Context menu: analyze image"
+  },
+  "contextMenuSummarize": {
+    "message": "用 AI 總結此頁面",
+    "description": "Context menu: summarize page"
+  },
+
+  "promptAnalyzeScreenshot": {
+    "message": "請分析這張截圖中的內容，描述你看到的重要資訊。",
+    "description": "Prompt for analyzing screenshot"
+  },
+  "promptTranslateTo": {
+    "message": "請將以下內容翻譯成$LANGUAGE$：\n\n$TEXT$",
+    "description": "Prompt for translation",
+    "placeholders": {
+      "language": {
+        "content": "$1",
+        "example": "英文"
+      },
+      "text": {
+        "content": "$2",
+        "example": "你好世界"
+      }
+    }
+  },
+  "promptExplain": {
+    "message": "請解釋以下內容，用簡潔易懂的方式說明：\n\n$TEXT$",
+    "description": "Prompt for explanation",
+    "placeholders": {
+      "text": {
+        "content": "$1",
+        "example": "量子計算"
+      }
+    }
+  },
+  "promptAnalyzeImage": {
+    "message": "請分析這張圖片，描述你看到的內容和重要細節。",
+    "description": "Prompt for image analysis"
+  },
+  "promptSummarizePage": {
+    "message": "請總結以下網頁內容的重點：\n\n標題：$TITLE$\n內容：$CONTENT$",
+    "description": "Prompt for page summarization",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "文章標題"
+      },
+      "content": {
+        "content": "$2",
+        "example": "文章內容..."
+      }
+    }
+  },
+  "promptSummarizeVideo": {
+    "message": "請總結以下 YouTube 影片的內容：\n\n標題：$TITLE$\n頻道：$CHANNEL$\n$DESCRIPTION$\n$TRANSCRIPT$\n\n請提供：\n1. 影片主要內容摘要\n2. 重點整理（條列式）\n3. 關鍵結論或重點",
+    "description": "Prompt for video summarization",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "影片標題"
+      },
+      "channel": {
+        "content": "$2",
+        "example": "頻道名稱"
+      },
+      "description": {
+        "content": "$3",
+        "example": "描述：..."
+      },
+      "transcript": {
+        "content": "$4",
+        "example": "字幕內容：..."
+      }
+    }
+  }
+}

@@ -4,6 +4,11 @@
 const API_TIMEOUT = 60000; // 60 seconds timeout for API calls
 const MAX_TOKENS = 4096;
 
+// i18n helper function
+function i18n(messageName, substitutions) {
+  return chrome.i18n.getMessage(messageName, substitutions) || messageName;
+}
+
 // Helper: Escape HTML to prevent XSS (service worker compatible)
 function escapeHtml(text) {
   return String(text)
@@ -19,31 +24,29 @@ chrome.runtime.onInstalled.addListener(() => {
   // Context menu for selected text
   chrome.contextMenus.create({
     id: 'translateSelection',
-    title: '用 AI 翻譯選取文字',
+    title: i18n('contextMenuTranslate'),
     contexts: ['selection']
   });
-  
+
   chrome.contextMenus.create({
     id: 'explainSelection',
-    title: '用 AI 解釋選取內容',
+    title: i18n('contextMenuExplain'),
     contexts: ['selection']
   });
-  
+
   // Context menu for images
   chrome.contextMenus.create({
     id: 'analyzeImage',
-    title: '用 AI 分析圖片',
+    title: i18n('contextMenuAnalyzeImage'),
     contexts: ['image']
   });
-  
+
   // Context menu for pages
   chrome.contextMenus.create({
     id: 'summarizePage',
-    title: '用 AI 總結此頁面',
+    title: i18n('contextMenuSummarize'),
     contexts: ['page']
   });
-  
-  console.log('AI Assistant extension installed');
 });
 
 // Handle context menu clicks
@@ -74,26 +77,26 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
 // Handle translate selection
 async function handleTranslateSelection(text, settings, tab) {
-  const langName = getLanguageName(settings.targetLang || 'zh-TW');
-  const prompt = `請將以下內容翻譯成${langName}：\n\n${text}`;
-  
+  const langName = getLanguageName(settings.targetLang || 'en');
+  const prompt = i18n('promptTranslateTo', [langName, text]);
+
   try {
     const response = await callAI(settings, prompt);
     await showResultInPage(tab.id, response);
   } catch (error) {
-    await showResultInPage(tab.id, `錯誤：${error.message}`, true);
+    await showResultInPage(tab.id, i18n('errorPrefix', [error.message]), true);
   }
 }
 
 // Handle explain selection
 async function handleExplainSelection(text, settings, tab) {
-  const prompt = `請解釋以下內容，用簡潔易懂的方式說明：\n\n${text}`;
-  
+  const prompt = i18n('promptExplain', [text]);
+
   try {
     const response = await callAI(settings, prompt);
     await showResultInPage(tab.id, response);
   } catch (error) {
-    await showResultInPage(tab.id, `錯誤：${error.message}`, true);
+    await showResultInPage(tab.id, i18n('errorPrefix', [error.message]), true);
   }
 }
 
@@ -104,12 +107,12 @@ async function handleAnalyzeImage(imageUrl, settings, tab) {
     const response = await fetch(imageUrl);
     const blob = await response.blob();
     const base64 = await blobToBase64(blob);
-    
-    const prompt = '請分析這張圖片，描述你看到的內容和重要細節。';
+
+    const prompt = i18n('promptAnalyzeImage');
     const aiResponse = await callAI(settings, prompt, base64);
     await showResultInPage(tab.id, aiResponse);
   } catch (error) {
-    await showResultInPage(tab.id, `錯誤：${error.message}`, true);
+    await showResultInPage(tab.id, i18n('errorPrefix', [error.message]), true);
   }
 }
 
@@ -118,16 +121,13 @@ async function handleSummarizePage(settings, tab) {
   try {
     // Get page content from content script
     const pageContent = await chrome.tabs.sendMessage(tab.id, { action: 'getPageContent' });
-    
-    const prompt = `請總結以下網頁內容的重點：
 
-標題：${pageContent.title}
-內容：${pageContent.text.substring(0, 10000)}`;
-    
+    const prompt = i18n('promptSummarizePage', [pageContent.title, pageContent.text.substring(0, 10000)]);
+
     const response = await callAI(settings, prompt);
     await showResultInPage(tab.id, response);
   } catch (error) {
-    await showResultInPage(tab.id, `錯誤：${error.message}`, true);
+    await showResultInPage(tab.id, i18n('errorPrefix', [error.message]), true);
   }
 }
 
@@ -191,7 +191,7 @@ async function callAnthropicAPI(apiKey, model, prompt, imageBase64) {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.error?.message || `API 錯誤：${response.status}`);
+      throw new Error(error.error?.message || i18n('errorApiGeneric', [response.status]));
     }
 
     const data = await response.json();
@@ -199,7 +199,7 @@ async function callAnthropicAPI(apiKey, model, prompt, imageBase64) {
   } catch (error) {
     clearTimeout(timeoutId);
     if (error.name === 'AbortError') {
-      throw new Error('API 請求超時，請重試');
+      throw new Error(i18n('errorApiTimeout'));
     }
     throw error;
   }
@@ -247,7 +247,7 @@ async function callOpenAIAPI(apiKey, model, prompt, imageBase64) {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.error?.message || `API 錯誤：${response.status}`);
+      throw new Error(error.error?.message || i18n('errorApiGeneric', [response.status]));
     }
 
     const data = await response.json();
@@ -255,7 +255,7 @@ async function callOpenAIAPI(apiKey, model, prompt, imageBase64) {
   } catch (error) {
     clearTimeout(timeoutId);
     if (error.name === 'AbortError') {
-      throw new Error('API 請求超時，請重試');
+      throw new Error(i18n('errorApiTimeout'));
     }
     throw error;
   }
@@ -329,14 +329,14 @@ function blobToBase64(blob) {
   });
 }
 
-// Helper: Get language name
+// Helper: Get language name (localized)
 function getLanguageName(code) {
-  const languages = {
-    'zh-TW': '繁體中文',
-    'zh-CN': '簡體中文',
-    'en': '英文',
-    'ja': '日文',
-    'ko': '韓文'
+  const langKeys = {
+    'zh-TW': 'langTraditionalChinese',
+    'zh-CN': 'langSimplifiedChinese',
+    'en': 'langEnglish',
+    'ja': 'langJapanese',
+    'ko': 'langKorean'
   };
-  return languages[code] || code;
+  return i18n(langKeys[code]) || code;
 }

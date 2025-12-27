@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "AI Assistant",
-  "version": "1.0.0",
-  "description": "Personal AI assistant for screen analysis, video summarization, and translation",
+  "name": "__MSG_extensionName__",
+  "version": "1.1.0",
+  "description": "__MSG_extensionDescription__",
+  "default_locale": "en",
   "permissions": [
     "activeTab",
     "storage",
