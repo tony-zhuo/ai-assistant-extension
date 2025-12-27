@@ -1,21 +1,28 @@
 // Content script for page interaction
 
-// Listen for messages from popup
+// Listen for messages from popup/background
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  switch (request.action) {
-    case 'getVideoInfo':
-      sendResponse(getYouTubeVideoInfo());
-      break;
-    case 'getPageContent':
-      sendResponse(getPageContent());
-      break;
-    case 'getSelection':
-      sendResponse(getSelectedText());
-      break;
-    default:
-      sendResponse({ error: 'Unknown action' });
-  }
-  return true; // Keep message channel open for async response
+  // Handle async operations properly
+  (async () => {
+    try {
+      switch (request.action) {
+        case 'getVideoInfo':
+          sendResponse(getYouTubeVideoInfo());
+          break;
+        case 'getPageContent':
+          sendResponse(getPageContent());
+          break;
+        case 'getSelection':
+          sendResponse(getSelectedText());
+          break;
+        default:
+          sendResponse({ error: 'Unknown action' });
+      }
+    } catch (error) {
+      sendResponse({ error: error.message });
+    }
+  })();
+  return true; // Required for async sendResponse
 });
 
 // Get YouTube video information
